@@ -6,7 +6,7 @@
 extern crate lazy_static;
 #[macro_use]
 extern crate rustler;
-extern crate num_bigint as bigint;
+extern crate dec64;
 
 pub mod atoms;
 mod de;
