@@ -21,6 +21,9 @@ quick_error! {
         InvalidNumber {
             description("Failed to deserialize number")
         }
+        InvalidDecimal {
+            description("Failed to deserialize decimal")
+        }
         InvalidStringable {
             description("Failed to deserialize term as an &str")
         }
