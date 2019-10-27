@@ -1,5 +1,6 @@
 use crate::{atoms, Error};
 use rustler::{types::tuple, Binary, Decoder, Encoder, Env, Term};
+use std::cmp::{min, max};
 
 /// Converts an `&str` to either an existing atom or an Elixir bitstring.
 pub fn str_to_term<'a>(env: &Env<'a>, string: &str) -> Result<Term<'a>, Error> {
@@ -82,7 +83,7 @@ pub fn parse_decimal(term: Term) -> Result<String, Error> {
       let coef: i64 = term.map_get(atoms::coef().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(0 as i64))?;
       let exp: i32 = term.map_get(atoms::exp().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(0 as i32))?;
       let sign: i64 = term.map_get(atoms::sign().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(1 as i64))?;
-      return Ok(format!("{:.6}", sign as f64 * (coef as f64 * 10f64.powi(exp))));
+      return Ok(format!("{:.*}", min(max(-exp, 2), 6) as usize, sign as f64 * (coef as f64 * 10f64.powi(exp))));
     }
   }
 }
