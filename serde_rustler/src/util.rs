@@ -1,6 +1,5 @@
 use crate::{atoms, Error};
 use rustler::{types::tuple, Binary, Decoder, Encoder, Env, Term};
-use dec64::Dec64;
 
 /// Converts an `&str` to either an existing atom or an Elixir bitstring.
 pub fn str_to_term<'a>(env: &Env<'a>, string: &str) -> Result<Term<'a>, Error> {
@@ -76,14 +75,14 @@ pub fn validate_tuple(term: Term, len: Option<usize>) -> Result<Vec<Term>, Error
     }
 }
 
-pub fn parse_decimal(term: Term) -> Result<f64, Error> {
+pub fn parse_decimal(term: Term) -> Result<String, Error> {
   match validate_struct(&term, Some("Elixir.Decimal")) {
     Err(_) => Err(Error::InvalidDecimal),
     Ok(_) => {
       let coef: i64 = term.map_get(atoms::coef().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(0 as i64))?;
-      let exp: i8 = term.map_get(atoms::exp().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(0 as i8))?;
+      let exp: i32 = term.map_get(atoms::exp().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(0 as i32))?;
       let sign: i64 = term.map_get(atoms::sign().to_term(term.get_env())).or(Err(Error::InvalidDecimal))?.decode().or(Ok(1 as i64))?;
-      return Ok(f64::from(Dec64::from_parts(coef * sign, exp)));
+      return Ok(format!("{:.6}", sign as f64 * (coef as f64 * 10f64.powi(exp))));
     }
   }
 }

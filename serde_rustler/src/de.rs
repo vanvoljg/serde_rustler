@@ -82,7 +82,7 @@ impl<'de, 'a: 'de> de::Deserializer<'de> for Deserializer<'a> {
                 Err(_) => visitor.visit_map(MapDeserializer::new(iter, None)),
                 Ok(struct_name_term) => {
                   match util::parse_decimal(self.term) {
-                    Ok(val) => visitor.visit_f64(val),
+                    Ok(val) => visitor.visit_string(val),
                     Err(_) => visitor.visit_map(MapDeserializer::new(iter, Some(struct_name_term)))
                   }
                 }

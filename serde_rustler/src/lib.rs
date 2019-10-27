@@ -6,7 +6,6 @@
 extern crate lazy_static;
 #[macro_use]
 extern crate rustler;
-extern crate dec64;
 
 pub mod atoms;
 mod de;
